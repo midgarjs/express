@@ -150,7 +150,6 @@ class ExpressService {
     } catch (error) {
       this.mid.error('@midgar/Express: Cannot start the http server')
       this.mid.error(error)
-      process.exit()
     }
   }
 

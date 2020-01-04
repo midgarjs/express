@@ -1,0 +1,6 @@
+{ "@midgar/express": {
+  "enabled": true,
+  "path": "../../.."
+}, 
+  "@midgar/service": true
+}

@@ -56,7 +56,6 @@ describe('Service', function () {
   it('HTTPS Serveur', async () => {
     mid = await initMidgar('-ssl')
     const app = mid.getService('mid:express').app
-
     // Add a get route to test express
     app.get('/getTest', function (req, res) {
       res.status(200).json({

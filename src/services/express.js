@@ -50,9 +50,14 @@ class ExpressService {
   }
 
   /**
+   * Int service
+   */
+  async init () {}
+
+  /**
    * Int express
    */
-  async init () {
+  async initExpress () {
     // Disable epress for cli
     if (this.mid.cli) return
     // Init and start servers

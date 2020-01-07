@@ -23,6 +23,6 @@ export default {
   log: {
     dir: getTmpDir('logs'),
     stdout: true,
-    level: 'debug'
+    level: 'error'
   }
 }

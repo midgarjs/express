@@ -1,6 +1,7 @@
 
 import express from 'express'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import http from 'http'
 import https from 'https'
@@ -109,6 +110,10 @@ class ExpressService {
       this.app.use(bodyParser.urlencoded(urlencodedOptions)) // support encoded bodies
     }
 
+    if (this.config.cookieParser === undefined || this.config.cookieParser !== false) {
+      console.log('set cookie parser')
+      this.app.use(cookieParser())
+    }
     /**
      * afterInit event.
      * Used to attach middleware on express

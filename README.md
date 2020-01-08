@@ -68,3 +68,28 @@ Ceci est la configuration par défault si elle n'est pas modifié dans la config
 }
 
 ```
+
+Vous pouvez activer cors depuis cette même configuration:
+
+```js
+{
+  ...
+  express: {
+    port: 3000,
+    ...
+    cors: {
+      origin: 'https://domain.com',
+      credentials: true,
+      allowedHeaders: [
+        'Access-Control-Allow-Headers', 
+        'Origin',
+        'Accept',
+        ...
+      ]
+    }
+  }
+...
+}
+
+```
+Vous trouverez plus d'information sur la configuration du module cors [ici](https://www.npmjs.com/package/cors).

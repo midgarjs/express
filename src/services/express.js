@@ -117,7 +117,7 @@ class ExpressService {
 
     if (this.config.cors !== undefined && typeof this.config.cors === 'object') {
       // Add cors middelware
-      this.midgar.app.use(cors(this.config.cors))
+      this.mid.app.use(cors(this.config.cors))
     }
 
     /**

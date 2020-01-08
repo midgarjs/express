@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import http from 'http'
 import https from 'https'
+import cors from 'cors'
 
 import { assignRecursive, timer } from '@midgar/utils'
 const serviceName = 'mid:express'
@@ -111,9 +112,14 @@ class ExpressService {
     }
 
     if (this.config.cookieParser === undefined || this.config.cookieParser !== false) {
-      console.log('set cookie parser')
       this.app.use(cookieParser())
     }
+
+    if (this.config.cors !== undefined && typeof this.config.cors === 'object') {
+      // Add cors middelware
+      this.midgar.app.use(cors(this.config.cors))
+    }
+
     /**
      * afterInit event.
      * Used to attach middleware on express

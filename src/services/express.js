@@ -36,7 +36,7 @@ class ExpressService {
 
     /**
      * Plugin config from Midgar config
-     * @type {Object}
+     * @type {object}
      */
     this.config = assignRecursive({
       host: 'localhost',
@@ -70,7 +70,7 @@ class ExpressService {
   /**
    * Return base url from config params
    *
-   * @return {String}
+   * @return {string}
    */
   _getBaseUrl () {
     let baseUrl = (this.config.ssl ? 'https' : 'http') + '://' + this.config.host
@@ -89,14 +89,7 @@ class ExpressService {
     // express instance
     this.app = express()
 
-    if (this.config.helmet === undefined || this.config.helmet) {
-      // default options
-      let helmetOptions = {}
-      if (this.config.helmet !== undefined && this.config.helmet.constructor === ({}).constructor) {
-        helmetOptions = this.config.helmet
-      }
-      this.app.use(helmet(helmetOptions))
-    }
+    this._initHelmet()
 
     if (this.config.jsonBodyParser === undefined || this.config.jsonBodyParser) {
       this.app.use(bodyParser.json()) // support json encoded bodies
@@ -137,6 +130,23 @@ class ExpressService {
 
     const time = timer.getTime('midgar-express-init')
     this.mid.debug(`@midgar/express: init in ${time} ms.`)
+  }
+
+  /**
+   * Add helmet middlware
+   *
+   * @see https://github.com/helmetjs/helmet
+   * @private
+   */
+  _initHelmet () {
+    if (this.config.helmet === undefined || this.config.helmet) {
+      // default options
+      let helmetOptions = {}
+      if (this.config.helmet !== undefined && this.config.helmet.constructor === ({}).constructor) {
+        helmetOptions = this.config.helmet
+      }
+      this.app.use(helmet(helmetOptions))
+    }
   }
 
   /**

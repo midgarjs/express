@@ -1,5 +1,5 @@
+
 import path from 'path'
-import fs from 'fs'
 import os from 'os'
 import uid from 'uid-safe'
 import mkdirp from 'mkdirp'
@@ -10,21 +10,24 @@ const resolve = (p) => {
 
 function getTmpDir (name) {
   const dirname = path.join(os.tmpdir(), uid.sync(8), name)
+
   mkdirp.sync(dirname, { mode: parseInt('0700', 8) })
+
   return dirname
 }
 
 export default {
   express: {
-    port: 4322,
+    port: 4321,
     host: 'localhost',
-    ssl: true,
-    sslCert: fs.readFileSync(resolve('../ssl/server.crt'), 'utf8'),
-    sslKey: fs.readFileSync(resolve('../ssl/key.pem'), 'utf8')
+    ssl: false,
+    sslCert: '',
+    sslKey: ''
   },
   log: {
     dir: getTmpDir('logs'),
     stdout: true,
-    level: 'error'
-  }
+    level: 'debug'
+  },
+  pluginsLocalPath: resolve('../plugins')
 }

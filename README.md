@@ -1,5 +1,5 @@
 [![Build Status](https://drone.midgar.io/api/badges/Midgar/express/status.svg)](https://drone.midgar.io/Midgar/express)
-[![Coverage](https://sonar.midgar.io/api/project_badges/measure?project=Midgar%3Aexpress&metric=coverage)](https://sonar.midgar.io/dashboard?id=Midgar%3Aexpress)
+[![Coverage](https://sonar.midgar.io/api/project_badges/measure?project=midgar-express&metric=coverage)](https://sonar.midgar.io/dashboard?id=midgar-express)
 
 # @midgar/express
 
@@ -8,13 +8,13 @@ Ajoute un service expess [Express](https://expressjs.com/)
 ## Installation
 
 ```sh
-$ npm i @midgar/express --save
+$ npm i @midgar/express
 ```
 
 Si tout s'est bien passé, un message de confirmation s'affiche:
 ```sh
 #midgar-cli
-@midgar/express added to plugins.js !
+@midgar/express added to plugins.json !
 ```
 
 ## Fonctionnement
@@ -24,16 +24,11 @@ const expressService = mid.getService('mid:express')
 
 // App express
 const app = expressService.app
-
-// Stop http server
-expressService.stop()
-// Start http server
-expressService.start()
 ```
 
 ## Ajouter un middlware express
 ```js
-import cookieParser from 'cookie-parser'
+import morgan from 'morgan'
 import { Plugin } from '@midgar/midgar'
 
 /**
@@ -43,7 +38,7 @@ class TestPlugin extends Plugin {
   init () {
     // Listen @midgar/express:afterInit event
     this.mid.on('@midgar/express:afterInit', (expressService) => {
-      expressService.app.use(cookieParser())
+      expressService.app.use(morgan('combined'))
     })
   }
 }
@@ -53,7 +48,7 @@ export default TestPlugin
 
 
 ## Configuration
-Ceci est la configuration par défault si elle n'est pas modifié dans la configration de Midgar
+Ceci est la configuration par défault si elle n'est pas modifié dans la configration de Midgar.
 ```js
 {
   ...

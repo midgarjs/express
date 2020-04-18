@@ -7,6 +7,8 @@ import { Plugin } from '@midgar/midgar'
 class ExpressPlugin extends Plugin {
   /**
    * Init plugin
+   *
+   * @return {Promise<void>}
    */
   async init () {
     // On Midgar stop stop http server
@@ -17,3 +19,5 @@ class ExpressPlugin extends Plugin {
 }
 
 export default ExpressPlugin
+
+export const dependencies = ['@midgar/service']

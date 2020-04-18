@@ -52,12 +52,9 @@ class ExpressService {
   }
 
   /**
-   * Int service
-   */
-  async init () {}
-
-  /**
    * Int express
+   *
+   * @return {Promise<void>}
    */
   async initExpress () {
     // Disable epress for cli
@@ -80,6 +77,8 @@ class ExpressService {
 
   /**
    * Create the express app and add some middlewares
+   *
+   * @return {Promise<void>}
    * @private
    */
   async _initExpress () {
@@ -151,6 +150,8 @@ class ExpressService {
 
   /**
    * Create http server instance and listen
+   *
+   * @return {Promise<void>}
    */
   async start () {
     // Check load stat
@@ -181,6 +182,8 @@ class ExpressService {
 
   /**
    * Stop web server
+   *
+   * @return {Promise<void>}
    */
   async stop () {
     if (this.httpServer === null) {

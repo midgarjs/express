@@ -1,12 +1,3 @@
-
-import express from 'express'
-import bodyParser from 'body-parser'
-import cookieParser from 'cookie-parser'
-import helmet from 'helmet'
-import http from 'http'
-import https from 'https'
-import cors from 'cors'
-
 import { assignRecursive, timer } from '@midgar/utils'
 const serviceName = 'mid:express'
 
@@ -14,7 +5,7 @@ const serviceName = 'mid:express'
  * ExpressService class
  */
 class ExpressService {
-  constructor (mid) {
+  constructor(mid) {
     /**
      * Midgar instance
      * @type {Midgar}
@@ -38,14 +29,19 @@ class ExpressService {
      * Plugin config from Midgar config
      * @type {object}
      */
-    this.config = assignRecursive({
-      host: 'localhost',
-      port: 3000,
-      ssl: false
-    }, this.mid.config.express || {})
+    this.config = assignRecursive(
+      {
+        host: 'localhost',
+        port: 3000,
+        ssl: false
+      },
+      this.mid.config.express || {}
+    )
 
-    if (!this.config.host || typeof this.config.host !== 'string') throw new TypeError('@midgar/express: Invalid express.host type in Midgar config !')
-    if (!this.config.port || !Number.isInteger(this.config.port)) throw new TypeError('@midgar/express: Invalid express.host type in Midgar config !')
+    if (!this.config.host || typeof this.config.host !== 'string')
+      throw new TypeError('@midgar/express: Invalid express.host type in Midgar config !')
+    if (!this.config.port || !Number.isInteger(this.config.port))
+      throw new TypeError('@midgar/express: Invalid express.host type in Midgar config !')
 
     // Check minimal config
     this.baseUrl = this._getBaseUrl()
@@ -56,7 +52,7 @@ class ExpressService {
    *
    * @return {Promise<void>}
    */
-  async initExpress () {
+  async initExpress() {
     // Disable epress for cli
     if (this.mid.cli) return
     // Init and start servers
@@ -69,7 +65,7 @@ class ExpressService {
    *
    * @return {string}
    */
-  _getBaseUrl () {
+  _getBaseUrl() {
     let baseUrl = (this.config.ssl ? 'https' : 'http') + '://' + this.config.host
     if (this.config.port !== 80 || (this.config.ssl && this.config.port !== 443)) baseUrl += ':' + this.config.port
     return baseUrl
@@ -81,15 +77,17 @@ class ExpressService {
    * @return {Promise<void>}
    * @private
    */
-  async _initExpress () {
+  async _initExpress() {
     timer.start('midgar-express-init')
     this.mid.debug('@midgar/express: init')
+    const { default: express } = await import('express')
 
     // express instance
     this.app = express()
 
-    this._initHelmet()
+    await this._initHelmet()
 
+    const { default: bodyParser } = await import('body-parser')
     if (this.config.jsonBodyParser === undefined || this.config.jsonBodyParser) {
       this.app.use(bodyParser.json()) // support json encoded bodies
     }
@@ -97,17 +95,22 @@ class ExpressService {
     if (this.config.urlencodedBodyParser === undefined || this.config.urlencodedBodyParser) {
       // default options
       let urlencodedOptions = { extended: true }
-      if (this.config.urlencodedBodyParser !== undefined && this.config.urlencodedBodyParser.constructor === ({}).constructor) {
+      if (
+        this.config.urlencodedBodyParser !== undefined &&
+        this.config.urlencodedBodyParser.constructor === {}.constructor
+      ) {
         urlencodedOptions = this.config.urlencodedBodyParser
       }
       this.app.use(bodyParser.urlencoded(urlencodedOptions)) // support encoded bodies
     }
 
     if (this.config.cookieParser === undefined || this.config.cookieParser !== false) {
+      const { default: cookieParser } = await import('cookie-parser')
       this.app.use(cookieParser())
     }
 
     if (this.config.cors !== undefined && typeof this.config.cors === 'object') {
+      const { default: cors } = await import('cors')
       // Add cors middelware
       this.app.use(cors(this.config.cors))
     }
@@ -137,11 +140,12 @@ class ExpressService {
    * @see https://github.com/helmetjs/helmet
    * @private
    */
-  _initHelmet () {
+  async _initHelmet() {
     if (this.config.helmet === undefined || this.config.helmet) {
+      const { default: helmet } = await import('helmet')
       // default options
       let helmetOptions = {}
-      if (this.config.helmet !== undefined && this.config.helmet.constructor === ({}).constructor) {
+      if (this.config.helmet !== undefined && this.config.helmet.constructor === {}.constructor) {
         helmetOptions = this.config.helmet
       }
       this.app.use(helmet(helmetOptions))
@@ -153,22 +157,27 @@ class ExpressService {
    *
    * @return {Promise<void>}
    */
-  async start () {
+  async start() {
     // Check load stat
     if (this.config === null) throw new Error('@midgar/midgar: Load config before !')
     if (this.logger === null) throw new Error('@midgar/midgar: Init logger before !')
 
     try {
       if (!this.config.ssl) {
+        const { default: http } = await import('http')
         this.httpServer = http.createServer(this.app)
         await this.httpServer.listen(this.config.port)
       } else {
         if (!this.config.sslKey) throw new Error('@midgar/express: express.sslKey config not found !')
         if (!this.config.sslCert) throw new Error('@midgar/express: express.sslCert config not found !')
-        this.httpServer = https.createServer({
-          key: this.config.sslKey,
-          cert: this.config.sslCert
-        }, this.app)
+        const { default: https } = await import('https')
+        this.httpServer = https.createServer(
+          {
+            key: this.config.sslKey,
+            cert: this.config.sslCert
+          },
+          this.app
+        )
 
         await this.httpServer.listen(this.config.port, this.config.host)
       }
@@ -185,7 +194,7 @@ class ExpressService {
    *
    * @return {Promise<void>}
    */
-  async stop () {
+  async stop() {
     if (this.httpServer === null) {
       this.mid.warn('@midgar/express: Http server is not start !')
       return

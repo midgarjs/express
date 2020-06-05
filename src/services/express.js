@@ -166,6 +166,7 @@ class ExpressService {
       if (!this.config.ssl) {
         const { default: http } = await import('http')
         this.httpServer = http.createServer(this.app)
+        await this.mid.emit('@midgar/express:beforeListen', this)
         await this.httpServer.listen(this.config.port)
       } else {
         if (!this.config.sslKey) throw new Error('@midgar/express: express.sslKey config not found !')
@@ -179,6 +180,7 @@ class ExpressService {
           this.app
         )
 
+        await this.mid.emit('@midgar/express:beforeListen', this)
         await this.httpServer.listen(this.config.port, this.config.host)
       }
 

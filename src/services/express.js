@@ -43,8 +43,14 @@ class ExpressService {
     if (!this.config.port || !Number.isInteger(this.config.port))
       throw new TypeError('@midgar/express: Invalid express.host type in Midgar config !')
 
+    this.mid.on('@midgar/midgar:stop', () => this._onMidgarStop())
+
     // Check minimal config
     this.baseUrl = this._getBaseUrl()
+  }
+
+  async _onMidgarStop() {
+    await this.stop()
   }
 
   /**
@@ -184,7 +190,7 @@ class ExpressService {
         await this.httpServer.listen(this.config.port, this.config.host)
       }
 
-      this.mid.info(`Express ready: ${this.baseUrl}`)
+      this.mid.info(`HTTP Server ready: ${this.baseUrl}`)
     } catch (error) {
       this.mid.error('@midgar/Express: Cannot start the http server')
       this.mid.error(error)
@@ -198,10 +204,10 @@ class ExpressService {
    */
   async stop() {
     if (this.httpServer === null) {
-      this.mid.warn('@midgar/express: Http server is not start !')
       return
     }
 
+    this.mid.info('HTTP Server stop')
     await new Promise((resolve, reject) => {
       if (!this.httpServer) return resolve()
       try {
